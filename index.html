@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/">
+  <link rel="stylesheet" href="./static/css/index.css" >
+  <title>express + socket.io</title>
+</head>
+
+<body>
+  <ul id="ul"></ul>
+  <div class="footer">
+    <input type="text" id="input">
+    <button id="btn">发 送</button>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script>
+    const $ = id => document.getElementById(id)
+    const socket = io()
+    function message() {
+      const value = $('input').value
+      if(!value) return false
+      const li = document.createElement('li')
+      $('input').value = ''
+      socket.emit('message', value)
+      socket.on('message', (msg)=>{
+        li.innerText = msg
+        $('ul').append(li)
+        $('ul').scrollTop = $('ul').scrollHeight
+      })
+    }
+    $('btn').onclick = function (e) {
+      message()
+      return false
+    }
+    document.onkeydown = ({ keyCode }) => { if (keyCode === 13) message() }
+  </script>
+</body>
+
+</html>
